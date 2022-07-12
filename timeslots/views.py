@@ -1,57 +1,41 @@
 from django.shortcuts import render
 from .models import *
 from django.http import HttpRequest, HttpResponse
-import os
-from .helperfunctions.nusmodsparser import *
+from . import tests
+from ast import literal_eval
+
+from .helperfunctions.timetableparser import *
 import pandas as pd
-import math
-import json
+from rest_framework.decorators import api_view
 
-# Helper Functions
-def tuple_parser(tup_list):
-    json_array = []
-    for rank in range(1, len(tup_list) + 1):
-        json_dict = {}
-        json_dict["rank"] = rank
-        json_dict["start"] = (tup_list[rank - 1])[0]
-        json_dict["end"] = json_dict["start"] + 1
-        json_dict["day"] = (tup_list[rank - 1])[1]
-        json_obj = json.dumps(json_dict)
-        json_array.append(json_obj)
-    return json_array
 
-# HTTP Response 
+@api_view(['POST', 'PUT'])
+def user_settings(request : HttpRequest):
+    username = request.POST.get('username')
+    modslink = request.POST.get('modslink')
+    days = request.POST.get('days')
+    day_time = request.POST.get('day_time')
+    if UserSettings.objects.filter(username = username).exists():
+        user_row = UserSettings.objects.get(username = username)
+        user_row.mods_link = modslink
+        user_row.days = days
+        user_row.day_time = day_time
+    else:
+        user_row = UserSettings(username = username, mods_link = modslink, days = days, day_time = day_time)
+    user_row.save()
+    return HttpResponse(status=200)
+
+
+@api_view(['GET'])
 def to_df(request: HttpRequest):
-    ut = pd.DataFrame(list(UTTraffic.objects.all().values()))
+    gym_name = request.GET.get('gym')
+    user_name = request.GET.get('user')
+    gym = get_gym_traffic(gym_name)
     reads = pd.DataFrame(list(NumberOfReadings.objects.all().values()))
-    ut.set_index('hour', inplace= True)
-    reads.set_index('hour', inplace= True)
-    link = request.GET.get('modslink')
-    # print(link)
-    days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
-    avg_traffic_dict = {}
-    for day in days:
-        for h in range(7, 22):
-            avg_traffic = math.floor(ut.loc[h, day] / reads.loc[h, day]) if reads.loc[h, day] != 0 else 0
-            if avg_traffic in avg_traffic_dict:
-                avg_traffic_dict[avg_traffic].append(tuple([h, day]))
-            else:
-                avg_traffic_dict[avg_traffic] = []
-                avg_traffic_dict[avg_traffic].append(tuple([h, day]))
-    traffics = list(avg_traffic_dict.keys())
-    traffics.sort()
-    timeslot_list = []
-    for traffic in traffics:
-        if(traffic != 0):
-            timeslot_list += avg_traffic_dict[traffic]
-    student_timetable = get_student_timetable(link)
-    # filtered_timeslot_list = []
-    # for timeslot in timeslot_list:
-    #     if timeslot[1] in student_timetable and timeslot[0] in student_timetable[timeslot[1]]:
-    #         continue
-    #     else:
-    #         filtered_timeslot_list.append(timeslot)
-    return HttpResponse(tuple_parser(timeslot_list))
+    timeslots = get_gym_timeslots(gym, reads, user_name)
+    return HttpResponse(timeslots)
+        
+    
     
     
 
