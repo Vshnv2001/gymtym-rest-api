@@ -2,18 +2,20 @@ HTTP Requests and responses:
 
 1) Submitting the NUSMods link: 
     a) Request: 
-        PUT /NUSMods/
+        PUT /USERSETTINGS
 
         {
-            user : "Enter Username here", 
-            modslink : "Enter Link to NUSMods here"
+            username : "Enter Username here", 
+            modslink : "Enter Link to NUSMods here", 
+            days : "Enter all Days", 
+            day_time : "Time of day",
         }
     
     b) Status Code 200
 
 2) Getting the timeslots:
     a) Request:
-        GET /timeslots?gym=gym_name
+        GET /timeslots?gym=gym_name&user=user_name
     
     b) Response: 
         {[

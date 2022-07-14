@@ -49,3 +49,9 @@ class NumberOfReadings(models.Model):
     fri = models.PositiveIntegerField(null =  True, default = 0)
     sat = models.PositiveIntegerField(null =  True, default = 0)
     sun = models.PositiveIntegerField(null =  True, default = 0)
+
+class UserSettings(models.Model): 
+    username = models.TextField(max_length= 256)
+    mods_link = models.TextField(max_length= 400, default= '')
+    days = models.TextField(max_length= 500, default= 'All')
+    day_time = models.TextField(max_length= 256, default= 'All')

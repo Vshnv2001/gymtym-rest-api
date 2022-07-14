@@ -2,6 +2,7 @@ import requests
 import datetime
 import json
 import math
+from django.http import HttpRequest
 
 def link_to_modules(link : str, sem : int):
     link = link.split('?')[1]
@@ -29,7 +30,7 @@ def get_module_timetable(moduleCode : str, acadYear : str, sem : int):
     get_request = get_request.format(acadYear = acadYear, moduleCode = moduleCode)
     response = requests.request('GET', get_request)
     response = json.loads(response.content.decode('utf-8'))
-    sem = sem - 1 if len((response['semesterData'])) == 1 else sem
+    sem = 0 if len((response['semesterData'])) == 1 else sem - 1
     timetable = (((response['semesterData'])[sem])['timetable'])
     return timetable
 
@@ -48,7 +49,8 @@ def get_timeslot(class_list : list, class_type : str, class_id : str) -> dict:
         if class_id in class_obj['classNo'] and class_type == class_obj['lessonType']:
             return class_obj
         
-def get_student_timetable(mod_link : str):
+def get_student_timetable(mod_link : str) -> dict:
+    mod_link.replace("'", "")
     sem = 1 if 'sem-1' in mod_link else 2
     mods_dict = link_to_modules(mod_link, sem)
     timetable_dict = dict()
