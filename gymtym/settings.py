@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'timeslots.apps.TimeslotsConfig',
     'django.contrib.sites',
     'rest_framework',
+
 ]
 
 MIDDLEWARE = [

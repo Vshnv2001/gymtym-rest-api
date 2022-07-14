@@ -30,9 +30,12 @@ def user_settings(request : HttpRequest):
 def to_df(request: HttpRequest):
     gym_name = request.GET.get('gym')
     user_name = request.GET.get('user')
-    gym = get_gym_traffic(gym_name)
+    gym_traffic_df = get_gym_traffic(gym_name)
     reads = pd.DataFrame(list(NumberOfReadings.objects.all().values()))
-    timeslots = get_gym_timeslots(gym, reads, user_name)
+    modslink = pd.DataFrame(list(UserSettings.objects.filter(username = user_name).all().values())).loc[0, "mods_link"]
+    days = pd.DataFrame(list(UserSettings.objects.filter(username = user_name).all().values())).loc[0, "days"]
+    day_time = pd.DataFrame(list(UserSettings.objects.filter(username = user_name).all().values())).loc[0, "day_time"]
+    timeslots = get_gym_timeslots(gym_traffic_df, reads, modslink, days, day_time)
     return HttpResponse(timeslots)
         
     

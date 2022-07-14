@@ -49,11 +49,10 @@ def get_timeslot(class_list : list, class_type : str, class_id : str) -> dict:
         if class_id in class_obj['classNo'] and class_type == class_obj['lessonType']:
             return class_obj
         
-def get_student_timetable(mod_link : str):
+def get_student_timetable(mod_link : str) -> dict:
     mod_link.replace("'", "")
     sem = 1 if 'sem-1' in mod_link else 2
     mods_dict = link_to_modules(mod_link, sem)
-    # print(mods_dict)
     timetable_dict = dict()
     acad_year = get_acad_year()
     for mod_code, lessons in mods_dict.items():

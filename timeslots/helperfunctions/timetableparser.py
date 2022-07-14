@@ -1,4 +1,5 @@
 import json
+import time
 from ..models import *
 import pandas as pd
 import math
@@ -17,6 +18,37 @@ def tuple_parser(tup_list):
         json_array.append(json_obj)
     return json_array
 
+# Add Day time to timetable
+def day_time_in_timetable(timetable_dict : dict, busy_time : list, day_set : set):
+    for day in day_set:
+        if day in timetable_dict.keys(): 
+            timetable_dict[day] += set(busy_time)
+        else:
+            timetable_dict[day] = set(busy_time)
+    return timetable_dict
+
+# Get the time of the day to gym
+def day_time_constraint(day_time : str, timetable_dict : dict, day_set : set):
+    busy_time = []
+    if day_time == 'All': 
+        return busy_time
+    else:
+        if 'Morning' not in day_time:
+            busy_time += [i for i in range(7, 11)]
+        if 'Afternoon' not in day_time:
+            busy_time += [i for i in range(11, 17)]
+        if 'Evening' not in day_time:
+            busy_time += [i for i in range(17, 22)]
+        timetable_dict = day_time_in_timetable(timetable_dict, busy_time, day_set)
+        return timetable_dict
+        
+# Apply constraint for days
+def days_constraint(days: str, day_set : set):
+    if days == 'All':
+        return day_set
+    else:
+        return set(days.split(','))
+
 # Get traffic Dataframe for appropriate Gym
 def get_gym_traffic(gym_name : str):
     if gym_name == 'UTown':
@@ -27,13 +59,10 @@ def get_gym_traffic(gym_name : str):
         return pd.DataFrame(list(MPSHTraffic.objects.all().values()))
 
 # Get timeslots in ascending order of traffic
-def get_gym_timeslots(gym_traffic_df : pd.DataFrame, reads : pd.DataFrame, username : str):
+def get_gym_timeslots(gym_traffic_df : pd.DataFrame, reads : pd.DataFrame, modslink : str, days_lst : str, day_time: str):
     gym_traffic_df.set_index('hour', inplace= True)
     reads.set_index('hour', inplace= True)
-    # link = request.GET.get('modslink')
-    link = UserSettings.objects.filter(username = username)
-    print(type(link))
-    link = 'https://nusmods.com/timetable/sem-2/share?CP2201=LEC:1&CS1101S=LEC:1,TUT:04,REC:01&CS1231S=TUT:05,LEC:1&CS2100=LEC:1,LAB:20,TUT:07&CS2102=TUT:16,LEC:1&CS2103=TUT:01,LEC:1'
+    link = modslink
     days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
     avg_traffic_dict = {}
     for day in days:
@@ -51,10 +80,14 @@ def get_gym_timeslots(gym_traffic_df : pd.DataFrame, reads : pd.DataFrame, usern
         if(traffic != 0):
             timeslot_list += avg_traffic_dict[traffic]
     student_timetable = get_student_timetable(link)
+    student_timetable = day_time_constraint(day_time, student_timetable, set(days))
+    allowed_days = days_constraint(days_lst, set(days))
     filtered_timeslot_list = []
     for timeslot in timeslot_list:
-        if timeslot[1] in student_timetable and timeslot[0] in student_timetable[timeslot[1]]:
+        if timeslot[1] not in allowed_days or timeslot[1] in student_timetable and timeslot[0] in student_timetable[timeslot[1]]:
             continue
         else:
             filtered_timeslot_list.append(timeslot)
     return tuple_parser(filtered_timeslot_list)
+
+
