@@ -31,7 +31,7 @@ def day_time_in_timetable(timetable_dict : dict, busy_time : list, day_set : set
 def day_time_constraint(day_time : str, timetable_dict : dict, day_set : set):
     busy_time = []
     if day_time == 'All': 
-        return busy_time
+        return timetable_dict
     else:
         if 'Morning' not in day_time:
             busy_time += [i for i in range(7, 11)]
@@ -81,6 +81,7 @@ def get_gym_timeslots(gym_traffic_df : pd.DataFrame, reads : pd.DataFrame, modsl
             timeslot_list += avg_traffic_dict[traffic]
     student_timetable = get_student_timetable(link)
     student_timetable = day_time_constraint(day_time, student_timetable, set(days))
+ 
     allowed_days = days_constraint(days_lst, set(days))
     filtered_timeslot_list = []
     for timeslot in timeslot_list:
@@ -89,5 +90,6 @@ def get_gym_timeslots(gym_traffic_df : pd.DataFrame, reads : pd.DataFrame, modsl
         else:
             filtered_timeslot_list.append(timeslot)
     return tuple_parser(filtered_timeslot_list)
+    # return filtered_timeslot_list
 
 
