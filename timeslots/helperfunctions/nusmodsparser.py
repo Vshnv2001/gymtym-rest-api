@@ -63,12 +63,12 @@ def get_student_timetable(mod_link : str) -> dict:
                 continue
             day = ((timeslot['day'])[0 : 3]).lower()
             hours = math.ceil((int(timeslot['endTime']) - int(timeslot['startTime']))/100)
-            hours_list = set()
+            hours_list = []
             startTime = math.floor(int(timeslot['startTime']) / 100)
             for i in range (startTime, startTime + hours):
-                hours_list.add(i)
+                hours_list.append(i)
             if day in timetable_dict:
-                timetable_dict[day].union(hours_list)
+                timetable_dict[day] += hours_list
             else:
                 timetable_dict[day] = hours_list
     return timetable_dict
