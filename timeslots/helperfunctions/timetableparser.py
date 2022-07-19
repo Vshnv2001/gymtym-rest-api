@@ -1,22 +1,15 @@
 import json
-import time
 from ..models import *
 import pandas as pd
 import math
 from .nusmodsparser import *
 
-# Convert a list of tuples into a JSON Format for HTTP Response
-# def tuple_parser(tup_list):
-#     json_array = []
-#     for rank in range(1, len(tup_list) + 1):
-#         json_dict = {}
-#         json_dict["rank"] = rank
-#         json_dict["start"] = (tup_list[rank - 1])[0]
-#         json_dict["end"] = json_dict["start"] + 1
-#         json_dict["day"] = (tup_list[rank - 1])[1]
-#         json_obj = json.dumps(json_dict)
-#         json_array.append(json_obj)
-#     return json_array
+# Get five timeslots for each day
+def get_best_timeslots(avg_traffic_dict):
+    for day in avg_traffic_dict.keys():
+        if (len(avg_traffic_dict[day])) > 5:
+            avg_traffic_dict[day] = (avg_traffic_dict[day])[0 : 5]
+    return avg_traffic_dict
 
 # Add Day time to timetable
 def day_time_in_timetable(timetable_dict : dict, busy_time : list, day_list : list):
@@ -101,7 +94,7 @@ def get_gym_timeslots(gym_traffic_df : pd.DataFrame, reads : pd.DataFrame, modsl
                     if timeslot in avg_traffic_dict[day]:
                         avg_traffic_dict[day].remove(timeslot)
             avg_traffic_dict[day] = list(avg_traffic_dict[day])
-
+    avg_traffic_dict = get_best_timeslots(avg_traffic_dict)
     return json.dumps(avg_traffic_dict)
 
 
