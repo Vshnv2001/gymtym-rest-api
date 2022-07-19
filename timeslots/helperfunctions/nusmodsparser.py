@@ -50,25 +50,28 @@ def get_timeslot(class_list : list, class_type : str, class_id : str) -> dict:
             return class_obj
         
 def get_student_timetable(mod_link : str) -> dict:
-    mod_link.replace("'", "")
-    sem = 1 if 'sem-1' in mod_link else 2
-    mods_dict = link_to_modules(mod_link, sem)
-    timetable_dict = dict()
-    acad_year = get_acad_year()
-    for mod_code, lessons in mods_dict.items():
-        for lesson, lesson_number in lessons.items():
-            class_list = get_module_timetable(mod_code, acad_year, sem)
-            timeslot = get_timeslot(class_list, lesson, lesson_number)
-            if timeslot == None:
-                continue
-            day = ((timeslot['day'])[0 : 3]).lower()
-            hours = math.ceil((int(timeslot['endTime']) - int(timeslot['startTime']))/100)
-            hours_list = []
-            startTime = math.floor(int(timeslot['startTime']) / 100)
-            for i in range (startTime, startTime + hours):
-                hours_list.append(i)
-            if day in timetable_dict:
-                timetable_dict[day] += hours_list
-            else:
-                timetable_dict[day] = hours_list
-    return timetable_dict
+    if mod_link != '':
+        mod_link.replace("'", "")
+        sem = 1 if 'sem-1' in mod_link else 2
+        mods_dict = link_to_modules(mod_link, sem)
+        timetable_dict = dict()
+        acad_year = get_acad_year()
+        for mod_code, lessons in mods_dict.items():
+            for lesson, lesson_number in lessons.items():
+                class_list = get_module_timetable(mod_code, acad_year, sem)
+                timeslot = get_timeslot(class_list, lesson, lesson_number)
+                if timeslot == None:
+                    continue
+                day = ((timeslot['day'])[0 : 3]).lower()
+                hours = math.ceil((int(timeslot['endTime']) - int(timeslot['startTime']))/100)
+                hours_list = []
+                startTime = math.floor(int(timeslot['startTime']) / 100)
+                for i in range (startTime, startTime + hours):
+                    hours_list.append(i)
+                if day in timetable_dict:
+                    timetable_dict[day] += hours_list
+                else:
+                    timetable_dict[day] = hours_list
+        return timetable_dict
+    else:
+        return dict()

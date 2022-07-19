@@ -35,6 +35,7 @@ def to_df(request: HttpRequest):
     gym_traffic_df = get_gym_traffic(gym_name)
     reads = pd.DataFrame(list(NumberOfReadings.objects.all().values()))
     modslink = pd.DataFrame(list(UserSettings.objects.filter(username = user_name).all().values())).loc[0, "mods_link"]
+    modslink = '' if modslink == 'None' else modslink
     days = pd.DataFrame(list(UserSettings.objects.filter(username = user_name).all().values())).loc[0, "days"]
     day_time = pd.DataFrame(list(UserSettings.objects.filter(username = user_name).all().values())).loc[0, "day_time"]
     timeslots = get_gym_timeslots(gym_traffic_df, reads, modslink, days, day_time)

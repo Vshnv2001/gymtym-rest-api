@@ -80,7 +80,8 @@ def get_gym_timeslots(gym_traffic_df : pd.DataFrame, reads : pd.DataFrame, modsl
         avg_traffic_dict[day] = day_timeslot_list
 
     # Get Student timetable in {day : set(hours)} format
-    student_timetable = get_student_timetable(link)
+    if (modslink != ''):
+        student_timetable = get_student_timetable(link)
     student_timetable = day_time_constraint(day_time, student_timetable, days)
  
     allowed_days = days_constraint(days_lst, set(days))
