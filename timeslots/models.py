@@ -53,5 +53,6 @@ class NumberOfReadings(models.Model):
 class UserSettings(models.Model): 
     username = models.TextField(max_length= 256)
     mods_link = models.TextField(max_length= 400, default= '')
+    gym_name = models.TextField(max_length=256, default= 'UTown')
     days = models.TextField(max_length= 500, default= 'All')
     day_time = models.TextField(max_length= 256, default= 'All')
