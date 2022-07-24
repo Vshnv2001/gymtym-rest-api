@@ -29,9 +29,9 @@ def user_settings(request : HttpRequest):
         username = request.GET.get('username')
         if UserSettings.objects.filter(username = username).exists():
             modslink = UserSettings.objects.get(username = username).mods_link
-            return HttpResponse(modslink)
+            return HttpResponse(json.dumps({'modslink' : modslink}))
         else:
-            return HttpResponse('')
+            return HttpResponse(json.dumps({'modslink' : ''}))
 
  
 @api_view(['GET'])
