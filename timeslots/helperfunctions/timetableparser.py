@@ -23,7 +23,7 @@ def day_time_in_timetable(timetable_dict : dict, busy_time : list, day_list : li
 # Get the time of the day to gym
 def day_time_constraint(day_time : str, timetable_dict : dict, day_list : list):
     busy_time = []
-    if day_time == 'All': 
+    if day_time.lower() == 'all': 
         return timetable_dict
     else:
         if 'Morning' not in day_time:
@@ -37,7 +37,7 @@ def day_time_constraint(day_time : str, timetable_dict : dict, day_list : list):
         
 # Apply constraint for days
 def days_constraint(days: str, day_set : set):
-    if days == 'All':
+    if days.lower() == 'all':
         return day_set
     else:
         return [day[0:3].lower() for day in days.split(',')]

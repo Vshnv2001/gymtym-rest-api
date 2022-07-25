@@ -1,6 +1,5 @@
 from .models import *
 from django.http import HttpRequest, HttpResponse
-import time
 
 from .helperfunctions.timetableparser import *
 import pandas as pd
@@ -36,7 +35,6 @@ def user_settings(request : HttpRequest):
  
 @api_view(['GET'])
 def to_df(request: HttpRequest):
-    start = time.time()
     gym_name = request.GET.get('gym')
     user_name = request.GET.get('user')
     gym_traffic_df = get_gym_traffic(gym_name)
@@ -46,7 +44,5 @@ def to_df(request: HttpRequest):
     days = pd.DataFrame(list(UserSettings.objects.filter(username = user_name).all().values())).loc[0, "days"]
     day_time = pd.DataFrame(list(UserSettings.objects.filter(username = user_name).all().values())).loc[0, "day_time"]
     timeslots = get_gym_timeslots(gym_traffic_df, reads, modslink, days, day_time)
-    end = time.time()
-    print(end - start)
     return HttpResponse(timeslots)
     
