@@ -14,7 +14,10 @@ def link_to_modules(link : str, sem : int):
         timeslots = mod_split[1].split(',')
         for timeslot in timeslots:
             timeslot_split = timeslot.split(':')
-            timeslot_dict[timeslot_split[0]] = timeslot_split[1]
+            if timeslot_split != '':
+                timeslot_dict[timeslot_split[0]] = timeslot_split[1]
+            else:
+                timeslot_dict = {}
         mods_dict[mod_split[0]] = timeslot_dict
     return mods_dict
 
