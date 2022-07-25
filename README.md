@@ -1,4 +1,4 @@
-# GymTym Readme
+# GymTym 
 
 ### Project Overview
 
