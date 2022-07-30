@@ -48,9 +48,17 @@ def mapping(class_type : str):
 
 def get_timeslot(class_list : list, class_type : str, class_id : str) -> dict:
     class_type = mapping(class_type)
-    for class_obj in class_list:
-        if class_id in class_obj['classNo'] and class_type == class_obj['lessonType']:
-            return class_obj
+    class_obj_list = []
+    if class_id.isnumeric():
+        for class_obj in class_list:
+            if class_id in class_obj['classNo'] and class_type == class_obj['lessonType']:
+                class_obj_list.append(dict(class_obj))
+                return class_obj_list
+    else:
+        for class_obj in class_list:
+            if class_id in class_obj['classNo'] and class_type == class_obj['lessonType']:
+                class_obj_list.append(dict(class_obj))
+        return class_obj_list
         
 def get_student_timetable(mod_link : str) -> dict:
     if mod_link != '':
@@ -62,19 +70,20 @@ def get_student_timetable(mod_link : str) -> dict:
         for mod_code, lessons in mods_dict.items():
             for lesson, lesson_number in lessons.items():
                 class_list = get_module_timetable(mod_code, acad_year, sem)
-                timeslot = get_timeslot(class_list, lesson, lesson_number)
-                if timeslot == None:
+                timeslots = get_timeslot(class_list, lesson, lesson_number)
+                if timeslots == None:
                     continue
-                day = ((timeslot['day'])[0 : 3]).lower()
-                hours = math.ceil((int(timeslot['endTime']) - int(timeslot['startTime']))/100)
-                hours_list = []
-                startTime = math.floor(int(timeslot['startTime']) / 100)
-                for i in range (startTime, startTime + hours):
-                    hours_list.append(i)
-                if day in timetable_dict:
-                    timetable_dict[day] += hours_list
-                else:
-                    timetable_dict[day] = hours_list
+                for timeslot in timeslots:
+                    day = ((timeslot['day'])[0 : 3]).lower()
+                    hours = math.ceil((int(timeslot['endTime']) - int(timeslot['startTime']))/100)
+                    hours_list = []
+                    startTime = math.floor(int(timeslot['startTime']) / 100)
+                    for i in range (startTime, startTime + hours):
+                        hours_list.append(i)
+                    if day in timetable_dict:
+                        timetable_dict[day] += hours_list
+                    else:
+                        timetable_dict[day] = hours_list
         return timetable_dict
     else:
         return dict()
