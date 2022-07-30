@@ -4,9 +4,9 @@
 
 This is a REST API Built for the GymTym app built using Django and models that connect to a MySQL Database
 
-### Clone this Repository and install dependencies
+### Clone this Repository and install relevant libraries
 
-To clone a new repository, run:
+To clone a new repository and install libraries, run:
 
 ```
 $ git clone https://github.com/Vshnv2001/gymtym-backend.git
