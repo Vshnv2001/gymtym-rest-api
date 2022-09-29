@@ -31,4 +31,4 @@ http://127.0.0.1:8000/timeslots/gymtyms/?user=toW9VNjpbDMjb5sTV1rQahJAlOI2
 
 ### Admin and Pull Requests
 
-The Admin of this Repo is Vaishnav Muralidharan (Vshnv2001). Feel free to reach out to me at mvaishnav.sg@gmail.com for any enquiries about this repo or pull requests.
+Feel free to reach out to me at mvaishnav.sg@gmail.com for any enquiries about this repo or pull requests.
