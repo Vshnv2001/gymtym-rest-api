@@ -35,6 +35,10 @@ Sample GET Request, paste the following in your browser:
 
 http://127.0.0.1:8000/timeslots/gymtyms/?user=toW9VNjpbDMjb5sTV1rQahJAlOI2
 
+### App Demo
+
+Click (here)[bit.ly/gymtym-demo] to view the demo of gymtym.
+
 ### Admin and Pull Requests
 
 Feel free to reach out to me at mvaishnav.sg@gmail.com for any enquiries about this repo or pull requests.
