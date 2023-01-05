@@ -23,7 +23,13 @@ $ git checkout -b <branch-name>
 
 ### Testing the API on the Development Server
 
-To test any changes on the Development Server, run python manage.py runserver and then use the URLs to test the responses.
+To test any changes on the Development Server, run:
+
+```
+python manage.py runserver 
+```
+
+and then use the URLs to test the responses.
 
 Sample GET Request, paste the following in your browser:
 
